@@ -1,5 +1,7 @@
 import time
 import random
+import json
+json.dumps({'channel': 'rpm', 'value': 5688})
 
 counters = {'coolant_temp': 0, 'rpm': 0, 'throttle_pos': 0}
 rpm = 2000

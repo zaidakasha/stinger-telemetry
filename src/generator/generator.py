@@ -1,12 +1,16 @@
 import time
 import random
+import socket
 import json
-json.dumps({'channel': 'rpm', 'value': 5688})
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 counters = {'coolant_temp': 0, 'rpm': 0, 'throttle_pos': 0}
 rpm = 2000
 throttle_pos = 50
 time_n = {'coolant_temp':0,'rpm': 0, 'throttle_pos': 0}
+
+
 def make_reading(sensor):
     dict_readings = {}
     dict_readings['channel'] = sensor
@@ -20,6 +24,12 @@ def make_reading(sensor):
     counters[sensor] +=1
     dict_readings['seq'] = counters[sensor]
     return dict_readings
+
+
+def send(reading):
+    text = json.dumps(reading)
+    data = text.encode()
+    sock.sendto(data, ("localhost", 9999))
 
 try:
 
@@ -37,15 +47,15 @@ try:
         time_n['rpm'] += 1
         time_n['throttle_pos'] += 1
         if time_n['coolant_temp'] >= 10:
-            print(make_reading('coolant_temp'))
+            send(make_reading('coolant_temp'))
             time_n['coolant_temp'] = 0
 
         if time_n['rpm'] >= 1:
-            print(make_reading('rpm'))
+            send(make_reading('rpm'))
             time_n['rpm'] = 0
         
         if time_n['throttle_pos'] >= 5:
-            print(make_reading('throttle_pos'))
+            send(make_reading('throttle_pos'))
             time_n['throttle_pos'] = 0    
         time.sleep(0.01) 
 

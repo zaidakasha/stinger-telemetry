@@ -1,6 +1,6 @@
 import socket
 import json
-
+from src.ingest.db import insert_reading
 
 
 def parse_packet(data):
@@ -18,4 +18,6 @@ if __name__ == "__main__":
             print(f"Bad packet dropped: {data}")
         else:
             print(reading)
+            insert_reading(reading) 
+    
         

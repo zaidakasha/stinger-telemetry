@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 import asyncio
+from src.ingest.db import get_recent
 
 app = FastAPI()
 
@@ -24,8 +25,12 @@ def home():
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    n = 0
+
     while True:
-        await websocket.send_text(f"reading {n}")
-        n += 1
+        rows = get_recent('coolant_temp', 5)
+        if rows:
+            value = rows[-1][2]          # last row's value (index 2)
+            await websocket.send_text(str(value))
         await asyncio.sleep(1)
+
+    

@@ -16,4 +16,4 @@ def insert_reading(reading):
 def get_recent(channel, seconds):
     return cur.execute('SELECT * FROM readings WHERE channel = ? AND timestamp > ?',(channel,time.time() - seconds)).fetchall()
 
-get_recent('coolant_temp', 100000)
+

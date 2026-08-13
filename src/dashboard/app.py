@@ -11,11 +11,32 @@ def home():
     <html>
       <body>
         <h1>Telemetry</h1>
-        <div id="output"></div>
+        <canvas id="chart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+          const ctx = document.getElementById("chart");
+          const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: [],
+              datasets: [{ label: 'coolant', data: [] }]
+            }
+          });
+
           const ws = new WebSocket("ws://127.0.0.1:8000/ws");
           ws.onmessage = (event) => {
-            document.getElementById("output").innerText = event.data;
+            const value = Number(event.data);
+
+            chart.data.labels.push(new Date().toLocaleTimeString());
+            chart.data.datasets[0].data.push(value);
+            chart.update();
+
+              if (value > 95) {
+                  document.body.style.background = 'red';
+              } else {
+                  document.body.style.background = 'white';
+              }
           };
         </script>
       </body>
@@ -29,7 +50,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         rows = get_recent('coolant_temp', 5)
         if rows:
-            value = rows[-1][2]          # last row's value (index 2)
+            value = rows[-1][2]          
             await websocket.send_text(str(value))
         await asyncio.sleep(1)
 

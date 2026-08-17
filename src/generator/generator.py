@@ -16,7 +16,7 @@ def make_reading(sensor):
     dict_readings['channel'] = sensor
     dict_readings['timestamp'] = time.time()
     if sensor == 'coolant_temp':
-        dict_readings['value'] = random.gauss(95, 1 )
+        dict_readings['value'] = random.gauss(85, 1 )
     elif sensor == 'rpm':
         dict_readings['value'] = rpm 
     elif sensor == 'throttle_pos':

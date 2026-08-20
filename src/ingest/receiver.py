@@ -1,6 +1,6 @@
 import socket
 import json
-from src.ingest.db import insert_reading
+from src.ingest.db import insert_batch
 import time
 
 
@@ -15,14 +15,18 @@ if __name__ == "__main__":
     last_seqs = {}
     count = 0
     start_time = time.time()
+    buffer = [] 
     while True:
         data, addr = sock.recvfrom(1024)
         reading = parse_packet(data)
         if reading is None:
             print(f"Bad packet dropped: {data}")
         else:
-            print(reading)
-            insert_reading(reading)
+            #print(reading)
+            buffer.append(reading)
+            if len(buffer) >= 100:
+                insert_batch(buffer)
+                buffer = []
             latency = time.time() - reading['timestamp']
 
             count += 1

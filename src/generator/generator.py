@@ -57,7 +57,7 @@ try:
         if time_n['throttle_pos'] >= 5:
             send(make_reading('throttle_pos'))
             time_n['throttle_pos'] = 0    
-        time.sleep(0.01) 
+        time.sleep(0) 
 
 except KeyboardInterrupt:
     print('Stopped')

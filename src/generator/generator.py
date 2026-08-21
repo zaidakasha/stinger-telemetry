@@ -47,17 +47,23 @@ try:
         time_n['rpm'] += 1
         time_n['throttle_pos'] += 1
         if time_n['coolant_temp'] >= 10:
-            send(make_reading('coolant_temp'))
-            time_n['coolant_temp'] = 0
+            reading = make_reading('coolant_temp')   
+            if random.random() >= 0.1:               
+                send(reading)
+            time_n['coolant_temp'] = 0 
 
         if time_n['rpm'] >= 1:
-            send(make_reading('rpm'))
+            reading = make_reading('rpm')
+            if random.random() >= 0.1:
+                send(reading)
             time_n['rpm'] = 0
         
         if time_n['throttle_pos'] >= 5:
-            send(make_reading('throttle_pos'))
+            reading = make_reading('throttle_pos')
+            if random.random() >= 0.1:
+                send(reading)
             time_n['throttle_pos'] = 0    
-        time.sleep(0) 
+        time.sleep(0.01) 
 
 except KeyboardInterrupt:
     print('Stopped')
